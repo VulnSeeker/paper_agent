@@ -1,0 +1,49 @@
+{
+  "paper": {
+    "title": "Low-Resource Transliteration for Roman-Urdu and Urdu Using Transformer-Based Models",
+    "abstract": "As the Information Retrieval (IR) field increasingly recognizes the importance of inclusivity, addressing the needs of low-resource languages remains a significant challenge. Transliteration between Urdu and its Romanized form, Roman Urdu, remains underexplored despite the widespread use of both scripts in South Asia. Prior work using RNNs on the Roman-Urdu-Parl dataset showed promising results but suffered from poor domain adaptability and limited evaluation. We propose a transformer-based approach using the m2m100 multilingual translation model, enhanced with masked language modeling (MLM) pretraining and fine-tuning on both Roman-Urdu-Parl and the domain-diverse Dakshina dataset. To address previous evaluation flaws, we introduce rigorous dataset splits and assess performance using BLEU, character-level BLEU, and CHRF. Our model achieves strong transliteration performance, with Char-BLEU scores of 96.37 for Urdu->Roman-Urdu and 97.44 for Roman-Urdu->Urdu. These results outperform both RNN baselines and GPT-4o Mini and demonstrate the effectiveness of multilingual transfer learning for low-resource transliteration tasks.",
+    "authors": [
+      "Umer Butt",
+      "Stalin Veranasi",
+      "Günter Neumann"
+    ],
+    "url": "https://arxiv.org/abs/2503.21530v2",
+    "pdf_url": "https://arxiv.org/pdf/2503.21530v2",
+    "published": "2025-03-27",
+    "source": "arxiv"
+  },
+  "summary": {
+    "one_line": "The paper presents a transformer-based model for transliterating between Urdu and Roman Urdu, achieving high character-level BLEU scores.",
+    "problem": "Low-resource transliteration between Urdu and its Romanized form is underexplored and existing RNN approaches lack domain adaptability and proper evaluation. The paper aims to improve transliteration quality and evaluation rigor for these scripts.",
+    "method": "The authors fine-tune the m2m100 multilingual translation model with masked language modeling pretraining, using the Roman-Urdu-Parl and Dakshina datasets. They introduce strict dataset splits and evaluate with BLEU, character-level BLEU, and CHRF metrics.",
+    "result": "The model attains Char-BLEU scores of 96.37 for Urdu→Roman Urdu and 97.44 for Roman Urdu→Urdu, surpassing RNN baselines and GPT-4o Mini.",
+    "why_it_matters": "Improved transliteration supports inclusive information retrieval for low-resource languages, enabling better access to digital content for Urdu speakers using both scripts.",
+    "limitations": "Not stated in abstract",
+    "keywords": [
+      "transliteration",
+      "Urdu",
+      "Roman Urdu",
+      "transformer",
+      "low-resource"
+    ]
+  },
+  "linkedin": "I was surprised to see a transformer outshine GPT-4o Mini on Urdu transliteration. \n\nThe authors built a transformer model to transliterate between Urdu script and its Romanized form. They fine-tuned the m2m100 multilingual translation model. They also added masked language modeling on the Roman-Urdu-Parl and Dakshina datasets. They also introduced strict train-test splits. They evaluated with BLEU, character-BLEU and CHRF. \n\nTheir model reached a character-BLEU of 96.37 for Urdu→Roman Urdu and 97.44 for the reverse direction. It beat the RNN baselines and GPT-4o Mini. \n\nI read this because I work on multilingual search tools. I need reliable script conversion. I take away that a well-tuned transformer can handle low-resource transliteration with near-perfect accuracy, which could simplify pipelines for Urdu content. \n\nhttps://arxiv.org/abs/2503.21530v2 \n\nHow does the model perform on noisy user-generated text that mixes English and Roman Urdu? \n\n#NLP #Urdu #Transliteration #LowResource #MachineLearning",
+  "twitter": [
+    "A transformer just cracked Urdu transliteration with near perfect scores, I’m stunned.",
+    "The paper tackles the low-resource task of converting Urdu script to Roman Urdu and back. They point out that previous RNN models struggled with domain shifts and weak evaluation.",
+    "They fine-tuned the m2m100 multilingual model, added masked language modeling, and trained on Roman-Urdu-Parl and Dakshina data with strict splits. Evaluation used BLEU, character-BLEU and CHRF.",
+    "The model hit character-BLEU 96.37 for Urdu→Roman Urdu and 97.44 for the reverse, beating RNN baselines and even GPT-4o Mini.",
+    "I read this because better transliteration can open up search and content for millions who type in Roman Urdu. I’m convinced that transformer fine-tuning is the way forward for low-resource scripts.",
+    "https://arxiv.org/abs/2503.21530v2\nCan this approach scale to other under-represented scripts?\n#NLP #Transliteration #Urdu #LowResource #AI"
+  ],
+  "medium": "## Transliteration Made Easy: A Transformer Wins Over RNNs for Urdu Scripts \n*How a simple fine-tune turned a multilingual model into a specialist for Roman-Urdu.* \n\nI was scrolling through the latest arXiv submissions on a rainy Tuesday, looking for anything that could help my friend who writes code comments in Roman Urdu but needs to generate Urdu documentation automatically. The title caught my eye because I have seen countless RNN-based transliteration tools stumble over spelling variations and informal slang. I clicked, skimmed the abstract, and then dug into the methodology. The authors’ approach felt refreshingly pragmatic: they took a large multilingual translation model, gave it a brief masked-language-modeling warm-up on two Urdu datasets, and then evaluated it with strict train-test splits. The whole process reminded me of how a generalist can become a specialist with just the right data.\n\n**Hook line** \nA transformer that was built for dozens of languages can now transliterate Urdu and Roman Urdu with near-perfect character accuracy.\n\n**What the paper is about** \nThe authors address the low-resource problem of converting between Urdu script and its Romanized form. They fine-tune the m2m100 multilingual model, first pretraining it with masked language modeling on the Roman-Urdu-Parl and Dakshina corpora. They also introduce strict dataset splits and evaluate the system with BLEU, character-level BLEU and CHRF metrics.\n\n**What they found** \nThe fine-tuned model reaches a character-level BLEU of 96.37 for Urdu → Roman Urdu and 97.44 for the reverse direction, beating the RNN baselines and even GPT-4o Mini. \n\n**Why I read it and what I took away** \nI read this paper because I needed a reliable way to bridge the two scripts that my team encounters daily. The most striking lesson for me is that a well-chosen multilingual backbone, when paired with a small amount of domain-specific pretraining, can outperform purpose-built RNNs and even large language models on a narrow task. It suggests that I can repurpose other multilingual models for niche transliteration problems without building everything from scratch. I also appreciated the authors’ emphasis on strict train-test splits; it reminded me to be more rigorous when I benchmark my own tools.\n\nhttps://arxiv.org/abs/2503.21530v2 \n\n**One real question** \nHow does the model handle code-mixed sentences where Urdu and Roman Urdu appear side by side, a common pattern in social media posts? \n\n#UrduTransliteration #TransformerModels #LowResourceNLP #MachineTranslation #AIForInclusion",
+  "bluesky": [
+    ""
+  ],
+  "_meta": {
+    "generated_at": "2026-10-10T15:38:56.607845",
+    "topic": "Low-Resource Transliteration for Roman-Urdu",
+    "tool": "PaperPilot",
+    "version": "0.1.0"
+  }
+}

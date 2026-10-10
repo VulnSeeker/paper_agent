@@ -40,7 +40,8 @@ Return the JSON summary."""
             {"role": "user", "content": user_msg},
         ],
         temperature=0.2,
-        max_tokens=800,
+        max_tokens=4000,
+        reasoning_effort="low",
         response_format={"type": "json_object"},
     )
     return json.loads(response.choices[0].message.content)

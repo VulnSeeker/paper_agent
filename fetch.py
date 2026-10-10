@@ -1,20 +1,39 @@
 import requests
 import feedparser
-from urllib.parse import quote
 from config import ARXIV_API, SEMANTIC_API
 
 
+def _build_arxiv_query(query: str) -> str:
+    """
+    Build a proper AND query for arXiv.
+    'low-resource NLP' -> 'all:"low-resource" AND all:"NLP"'
+    Quoted phrases stay together.
+    """
+    parts = query.strip().split()
+    clauses = []
+    for part in parts:
+        # If the user typed a quoted phrase, keep it
+        if part.startswith('"') and part.endswith('"'):
+            clauses.append(f"all:{part}")
+        else:
+            clauses.append(f'all:"{part}"')
+    return " AND ".join(clauses)
+
+
 def search_arxiv(query: str, max_results: int = 5) -> list:
-    """Search arXiv for papers. Returns list of dicts."""
     params = {
-        "search_query": f"all:{query}",
+        "search_query": _build_arxiv_query(query),
         "start": 0,
         "max_results": max_results,
-        "sortBy": "submittedDate",
+        "sortBy": "relevance",       # <-- relevance, not date
         "sortOrder": "descending",
     }
-    r = requests.get(ARXIV_API, params=params, timeout=20)
-    feed = feedparser.parse(r.content)
+    try:
+        r = requests.get(ARXIV_API, params=params, timeout=20)
+        feed = feedparser.parse(r.content)
+    except Exception as e:
+        print(f"[arxiv] error: {e}")
+        return []
 
     papers = []
     for entry in feed.entries:
@@ -33,7 +52,6 @@ def search_arxiv(query: str, max_results: int = 5) -> list:
 
 
 def search_semantic(query: str, limit: int = 5) -> list:
-    """Search Semantic Scholar for papers. Adds citation counts."""
     params = {
         "query": query,
         "limit": limit,
@@ -61,25 +79,42 @@ def search_semantic(query: str, limit: int = 5) -> list:
         return []
 
 
-def fetch_papers(query: str, n: int = 5) -> list:
-    """Combined search — arXiv first, then Semantic Scholar."""
-    arxiv = search_arxiv(query, n)
-    semantic = search_semantic(query, n)
+def _keyword_overlap(paper: dict, query: str) -> int:
+    """Score a paper by how many query words appear in its title/abstract."""
+    text = (paper.get("title", "") + " " + paper.get("abstract", "")).lower()
+    words = [w.lower().strip('"') for w in query.split() if len(w) > 2]
+    return sum(1 for w in words if w in text)
 
-    # Merge and dedupe by title
+
+def fetch_papers(query: str, n: int = 5) -> list:
+    """
+    Combined search. Merges arXiv + Semantic Scholar, dedupes,
+    and re-ranks by keyword overlap so the top results actually
+    match the topic.
+    """
+    arxiv = search_arxiv(query, n * 2)
+    semantic = search_semantic(query, n * 2)
+
     seen = set()
     merged = []
     for p in arxiv + semantic:
         key = p["title"].lower()[:60]
-        if key not in seen:
+        if key and key not in seen:
             seen.add(key)
             merged.append(p)
+
+    # Re-rank by keyword overlap
+    merged.sort(key=lambda p: _keyword_overlap(p, query), reverse=True)
+
+    # Drop papers with zero keyword overlap if we have better options
+    scored = [(p, _keyword_overlap(p, query)) for p in merged]
+    top_score = max((s for _, s in scored), default=0)
+    if top_score > 0:
+        merged = [p for p, s in scored if s > 0]
+
     return merged[:n]
 
 
 if __name__ == "__main__":
-    papers = fetch_papers("Roman Urdu fake news", 5)
-    for p in papers:
-        print(f"[{p['source']}] {p['title']}")
-        print(f"   {p.get('url', '')}")
-        print()
+    for p in fetch_papers("low-resource NLP", 3):
+        print(p["title"], "|", p["url"])
